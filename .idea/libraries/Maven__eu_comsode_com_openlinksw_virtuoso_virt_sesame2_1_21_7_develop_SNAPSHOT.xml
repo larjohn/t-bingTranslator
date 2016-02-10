@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: eu.comsode:com.openlinksw.virtuoso.virt_sesame2:1.21-7-develop-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/eu/comsode/com.openlinksw.virtuoso.virt_sesame2/1.21-7-develop-SNAPSHOT/com.openlinksw.virtuoso.virt_sesame2-1.21-7-develop-20160115.012847-30.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/eu/comsode/com.openlinksw.virtuoso.virt_sesame2/1.21-7-develop-SNAPSHOT/com.openlinksw.virtuoso.virt_sesame2-1.21-7-develop-20160115.012847-30-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/eu/comsode/com.openlinksw.virtuoso.virt_sesame2/1.21-7-develop-SNAPSHOT/com.openlinksw.virtuoso.virt_sesame2-1.21-7-develop-20160115.012847-30-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

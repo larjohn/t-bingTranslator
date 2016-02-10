@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: eu.comsode:com.openlinksw.virtuoso.virtjdbc4_1:3.76-7-develop-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/eu/comsode/com.openlinksw.virtuoso.virtjdbc4_1/3.76-7-develop-SNAPSHOT/com.openlinksw.virtuoso.virtjdbc4_1-3.76-7-develop-20150303.232217-33.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/eu/comsode/com.openlinksw.virtuoso.virtjdbc4_1/3.76-7-develop-SNAPSHOT/com.openlinksw.virtuoso.virtjdbc4_1-3.76-7-develop-20150303.232217-33-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/eu/comsode/com.openlinksw.virtuoso.virtjdbc4_1/3.76-7-develop-SNAPSHOT/com.openlinksw.virtuoso.virtjdbc4_1-3.76-7-develop-20150303.232217-33-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
