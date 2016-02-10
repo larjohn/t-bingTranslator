@@ -79,7 +79,7 @@ public class BingTranslator extends AbstractDpu<BingTranslatorConfig_V1> {
         for(LabelEntry predicate: config.getLabelPredicates()){
             sparql_query += " <"+ predicate.getLabelURI()+"> ";
         }
-        sparql_query+="}}";
+        sparql_query+="} }LIMIT 5";
         ContextUtils.sendMessage(ctx, DPUContext.MessageType.INFO, "status.starting", "");
         if (StringUtils.isBlank(sparql_query)) {
             throw ContextUtils.dpuException(ctx, "error.invalidConfiguration.queryEmpty");
@@ -132,17 +132,16 @@ public class BingTranslator extends AbstractDpu<BingTranslatorConfig_V1> {
                     query.setDataset(new DatasetBuilder().withDefaultGraphs(graphURIs).build());
                     result = query.evaluate();
                     if (result.hasNext()) {
-                        StringBuilder sb = new StringBuilder();
                         while (result.hasNext()
                                 ) {
                             // From Greek -> English
                             BindingSet triple = result.next();
-                            String translatedText = Translate.execute(triple.getValue("label").stringValue().toLowerCase(), Language.GREEK, Language.ENGLISH);
+                            String translatedText = Translate.execute(triple.getValue("label").stringValue().toLowerCase(), Language.fromString(config.getInputLanguage()), Language.fromString(config.getOutputLanguage()));
 
-                            System.out.println("Greek -> English : " + translatedText);
+                            System.out.println(Language.fromString(config.getInputLanguage()).name() + "->" + Language.fromString(config.getOutputLanguage()).name()+": " + translatedText);
 
                             ValueFactory factory = new ValueFactoryImpl();
-                            Value literal = factory.createLiteral(translatedText, "en");
+                            Value literal = factory.createLiteral(translatedText, config.getOutputLanguage());
                             rdfTableWrap.add(factory.createURI(triple.getValue("term").stringValue()),factory.createURI(triple.getValue("predicate").stringValue()), literal);
 
                         }

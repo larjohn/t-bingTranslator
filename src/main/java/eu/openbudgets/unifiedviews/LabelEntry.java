@@ -1,28 +1,28 @@
 package eu.openbudgets.unifiedviews;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by larjohns on 10/02/2016.
  */
 public class LabelEntry {
 
-    private URI labelURI;
+    private String labelURI;
 
-    public URI getLabelURI(){
+    public String getLabelURI(){
         return labelURI;
     }
 
-    public LabelEntry(LabelEntry itemId) {
+
+
+    public LabelEntry()  {
+
+            this.setLabelURI("http://example.com/label");
 
     }
 
-    public LabelEntry()
-    {
-
-    }
-
-    public void setLabelURI(URI labelURI) {
+    public void setLabelURI(String labelURI) {
         this.labelURI = labelURI;
     }
 }

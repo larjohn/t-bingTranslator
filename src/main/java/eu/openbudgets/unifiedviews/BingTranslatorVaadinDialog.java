@@ -1,6 +1,8 @@
 package eu.openbudgets.unifiedviews;
 
+import com.memetix.mst.language.Language;
 import com.vaadin.data.Container;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.event.ShortcutAction;
@@ -23,8 +25,13 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
 
     private final Container container = new BeanItemContainer<>(LabelEntry.class);
 
-    private ObjectProperty<Boolean> ignoreTlsErrors = new ObjectProperty<>(Boolean.FALSE);
 
+    private ObjectProperty<String> sourceLanguage = new ObjectProperty<>("el");
+    private ObjectProperty<String> targetLanguage = new ObjectProperty<>("en");
+    private ObjectProperty<String> outputGraphName = new ObjectProperty<>("http://example.org/data/");
+    private ObjectProperty<String> bingClientId = new ObjectProperty<>("");
+    private ObjectProperty<String> bingClientSecret = new ObjectProperty<>("");
+    private ObjectProperty<Boolean> strictLabelLanguageMatching = new ObjectProperty<>(Boolean.FALSE);
 
     public BingTranslatorVaadinDialog() {
         super(BingTranslator.class);
@@ -39,8 +46,8 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
         mainLayout.setMargin(true);
         mainLayout.setSpacing(true);
 
-        final Button addVfsFile = new Button("+");
-        addVfsFile.addClickListener(new Button.ClickListener() {
+        final Button addLabelEntry = new Button("+");
+        addLabelEntry.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -49,7 +56,7 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
 
         });
 
-        final Table table = new Table();
+        final Table table = new Table("Label predicates");
         table.addGeneratedColumn("remove", new Table.ColumnGenerator() {
 
             @Override
@@ -72,7 +79,8 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
         });
         table.setContainerDataSource(container);
         table.setColumnHeaderMode(Table.ColumnHeaderMode.EXPLICIT);
-        table.setColumnHeader("labelURI", ctx.tr("labelURI"));
+        table.setColumnHeader("labelURI", ctx.tr("Predicate URI"));
+        table.setColumnWidth("remove", 40);
 
         table.setEditable(true);
         table.setSizeFull();
@@ -83,7 +91,7 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
                 AbstractTextField result = new TextField();
 
                 if (propertyId.equals("labelURI")) {
-                    result.setDescription(ctx.tr("FilesDownloadVaadinDialog.uri.description"));
+                    result.setDescription("Label URI");
                 }
 
                 result.setWidth("100%");
@@ -93,20 +101,80 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
 
         });
         table.setVisibleColumns("remove", "labelURI");
-        mainLayout.addComponent(addVfsFile);
-        addVfsFile.setClickShortcut(ShortcutAction.KeyCode.INSERT);
-        addVfsFile.setDescription(ctx.tr("FilesDownloadVaadinDialog.addButton.description"));
+        mainLayout.addComponent(addLabelEntry);
+        addLabelEntry.setClickShortcut(ShortcutAction.KeyCode.INSERT);
+        addLabelEntry.setDescription("Add Label Predicate");
         mainLayout.addComponent(table);
-        mainLayout.setExpandRatio(addVfsFile, 0.0f);
+        mainLayout.setExpandRatio(addLabelEntry, 0.0f);
+
+
+        TextField txtSourceLanguage = new TextField("Source Language", sourceLanguage);
+        txtSourceLanguage.setNullRepresentation("");
+        txtSourceLanguage.setImmediate(true);
+        txtSourceLanguage.setLocale(ctx.getDialogMasterContext().getDialogContext().getLocale());
+        txtSourceLanguage.addValidator(new Validator() {
+
+            @Override
+            public void validate(Object value) throws InvalidValueException {
+                if (value != null) {
+
+                    if(Language.fromString((String) value)==null){
+                        throw new InvalidValueException("Invalid Language");
+                    }
+                }
+            }
+        });
+
+        TextField txtTargetLanguage = new TextField("Target Language", targetLanguage);
+        txtTargetLanguage.setNullRepresentation("");
+        txtTargetLanguage.setImmediate(true);
+        txtTargetLanguage.setLocale(ctx.getDialogMasterContext().getDialogContext().getLocale());
+        txtTargetLanguage.addValidator(new Validator() {
+
+            @Override
+            public void validate(Object value) throws InvalidValueException {
+                if (value != null) {
+
+                    if(Language.fromString((String) value)==null){
+                        throw new InvalidValueException("Invalid Language");
+                    }
+                }
+            }
+        });
+
+        TextField txtBingClientId = new TextField("Bing Client Id", bingClientId);
+        txtBingClientId.setNullRepresentation("");
+        txtBingClientId.setImmediate(true);
+        txtBingClientId.setLocale(ctx.getDialogMasterContext().getDialogContext().getLocale());
+
+
+        TextField txtBingClientSecret = new TextField("Bing Client Sercret", bingClientSecret);
+        txtBingClientSecret.setNullRepresentation("");
+        txtBingClientSecret.setImmediate(true);
+        txtBingClientSecret.setLocale(ctx.getDialogMasterContext().getDialogContext().getLocale());
+
+
+        TextField txtOutputGraphName = new TextField("Output graph name", outputGraphName);
+        txtOutputGraphName.setNullRepresentation("");
+        txtOutputGraphName.setImmediate(true);
+        txtOutputGraphName.setLocale(ctx.getDialogMasterContext().getDialogContext().getLocale());
 
 
 
-        HorizontalLayout bottomLayout = new HorizontalLayout();
+
+
+
+        VerticalLayout bottomLayout = new VerticalLayout();
         bottomLayout.setWidth("100%");
 
-        CheckBox chkIgnoreTlsErrors = new CheckBox(ctx.tr("FilesDownloadVaadinDialog.ignoreTlsErrors.caption"), ignoreTlsErrors);
-        chkIgnoreTlsErrors.setDescription(ctx.tr("FilesDownloadVaadinDialog.ignoreTlsErrors.description"));
-        bottomLayout.addComponent(chkIgnoreTlsErrors);
+        CheckBox strictLanguageLabelMatching = new CheckBox(ctx.tr("Strict language label matching"), strictLabelLanguageMatching);
+        strictLanguageLabelMatching.setDescription("If you enable this option, only labels with language (@) annotation equal to the source language will be selected and translated. Otherwise, all labels are assumed to be in the source language and are therefore translated.");
+        bottomLayout.addComponent(txtSourceLanguage);
+        bottomLayout.addComponent(txtTargetLanguage);
+        bottomLayout.addComponent(txtOutputGraphName);
+        bottomLayout.addComponent(txtBingClientId);
+        bottomLayout.addComponent(txtBingClientSecret);
+        bottomLayout.addComponent(strictLanguageLabelMatching);
         mainLayout.addComponent(bottomLayout);
 
         setCompositionRoot(mainLayout);
@@ -122,21 +190,25 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
         if (isContainerValid(true)) {
             try {
                 for (Object itemId : container.getItemIds()) {
-                    LabelEntry labelEntry = new LabelEntry((LabelEntry) itemId);
-                    URI uri = labelEntry.getLabelURI().normalize();
+                    LabelEntry labelEntry = (LabelEntry) itemId;
 
-                    labelEntry.setLabelURI(uri.normalize());
+                    labelEntry.setLabelURI(new URI(labelEntry.getLabelURI()).normalize().toString());
 
                     labelEntries.add(labelEntry);
                 }
             } catch (Exception e) {
-                throw new DPUConfigException(ctx.tr("FilesDownloadVaadinDialog.getConfiguration.exception"), e);
+                throw new DPUConfigException(ctx.tr("A configuration exception was thrown"), e);
             }
         }
 
         BingTranslatorConfig_V1 result = new BingTranslatorConfig_V1();
         result.setLabelPredicates(labelEntries);
-
+        result.setBingClientId(bingClientId.getValue());
+        result.setBingClientSecret(bingClientSecret.getValue());
+        result.setInputLanguage(sourceLanguage.getValue());
+        result.setOutputLanguage(targetLanguage.getValue());
+        result.setOutputGraphName(outputGraphName.getValue());
+        result.setStrictLabelLanguageMatching(strictLabelLanguageMatching.getValue());
 
         return result;
     }
@@ -149,20 +221,16 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
             for (Object itemId : container.getItemIds()) {
                 LabelEntry labelEntry = (LabelEntry) itemId;
 
-                if (StringUtils.isBlank(labelEntry.getLabelURI().toString())) {
+                if (StringUtils.isBlank(labelEntry.getLabelURI())) {
                     result = false;
-                    resultException = new DPUConfigException(ctx.tr("FilesDownloadVaadinDialog.uri.required"));
+                    resultException = new DPUConfigException("A non-empty URI is required for each label predicate.");
                     break;
                 }
-
-
-
-
 
             }
         } catch (Exception e) {
             result = false;
-            resultException = new DPUConfigException(ctx.tr("FilesDownloadVaadinDialog.uri.invalid"), e);
+            resultException = new DPUConfigException("Invalid URI", e);
         }
 
         if (throwException && resultException != null) {
@@ -179,20 +247,25 @@ public class BingTranslatorVaadinDialog extends AbstractDialog<BingTranslatorCon
                 container.removeAllItems();
 
                 for (LabelEntry labelEntry : config.getLabelPredicates()) {
-                    LabelEntry labelEntryInContainer = new LabelEntry(labelEntry);
-                    labelEntryInContainer.setLabelURI(labelEntry.getLabelURI().normalize());
+                    labelEntry.setLabelURI(new URI(labelEntry.getLabelURI()).normalize().toString());
 
-                    container.addItem(labelEntryInContainer);
+                    container.addItem(labelEntry);
                 }
             } catch (Exception e) {
-                throw new DPUConfigException(ctx.tr("FilesDownloadVaadinDialog.setConfiguration.exception"), e);
+                throw new DPUConfigException(ctx.tr("An exception was thrown"), e);
             }
         }
+        sourceLanguage.setValue(config.getInputLanguage());
+        targetLanguage.setValue(config.getOutputLanguage());
+        outputGraphName.setValue(config.getOutputGraphName());
+        bingClientId.setValue(config.getBingClientId());
+        bingClientSecret.setValue(config.getBingClientSecret());
+        strictLabelLanguageMatching.setValue(config.isStrictLabelLanguageMatching());
     }
 
     @Override
     public String getDescription() {
-        return ctx.tr("FilesDownloadVaadinDialog.getDescription", new Object[] { container.getItemIds().size() });
+        return "Bing Translator (" + sourceLanguage.getValue()+"->"+targetLanguage.getValue() +")";
     }
 
 }
